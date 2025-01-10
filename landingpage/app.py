@@ -37,6 +37,5 @@ st.subheader("Need a Custom AI Finance App?")
 st.write("Don't see what you're looking for? Let us build a custom AI-powered financial application tailored to your specific needs.")
 
 # Redirect to Google Form link
-if st.button("Request Custom App", key="custom_app_request"):
-    st.write("Redirecting to Custom App Request Form...")
-    st.experimental_set_query_params(url="https://forms.gle/bkheBL4PDceiJpn19")
+form_url = "https://forms.gle/bkheBL4PDceiJpn19"
+st.markdown(f"[Request Custom App]({form_url})", unsafe_allow_html=True)
