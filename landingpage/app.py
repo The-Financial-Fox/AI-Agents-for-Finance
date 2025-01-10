@@ -26,12 +26,12 @@ for i, app in enumerate(apps):
     with columns[i % 3]:
         st.subheader(app["name"])
         st.text(app["description"])
-        st.button(app["launch_text"])
+        # Add a unique key for each button
+        st.button(app["launch_text"], key=f"button_{i}")
 
 # Custom App Request Section
 st.markdown("---")
 st.subheader("Need a Custom AI Finance App?")
 st.write("Don't see what you're looking for? Let us build a custom AI-powered financial application tailored to your specific needs.")
-if st.button("Request Custom App"):
+if st.button("Request Custom App", key="custom_app_request"):
     st.write("Redirecting to custom app request...")
-
