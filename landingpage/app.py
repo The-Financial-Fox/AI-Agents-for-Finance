@@ -8,14 +8,14 @@ st.subheader("Essential applications for Finance, Planning & Analysis")
 # Stay Updated Section
 st.text_input("Stay Updated", "Enter your email")
 
-# Define apps
+# Define apps with emojis and links
 apps = [
-    {"name": "File Converter", "description": "Convert financial data between CSV and XLSX formats seamlessly", "launch_text": "Launch application →"},
-    {"name": "Finance Data Cleaner", "description": "Clean and standardize your financial datasets efficiently", "launch_text": "Launch application →"},
-    {"name": "Stock Market Analysis", "description": "Analyze market trends and financial KPIs", "launch_text": "Launch application →"},
-    {"name": "Excel File Merger", "description": "Combine multiple Excel files into a single consolidated dataset", "launch_text": "Launch application →"},
-    {"name": "Monte Carlo Simulator", "description": "Run sophisticated Monte Carlo simulations for financial modeling", "launch_text": "Launch application →"},
-    {"name": "Prophet Forecaster", "description": "Advanced time series forecasting for financial data analysis", "launch_text": "Launch application →"},
+    {"name": "File Converter 📂", "description": "Convert financial data between CSV and XLSX formats seamlessly", "link": "#"},
+    {"name": "Finance Data Cleaner 🧹", "description": "Clean and standardize your financial datasets efficiently", "link": "#"},
+    {"name": "Stock Market Analysis 📈", "description": "Analyze market trends and financial KPIs", "link": "#"},
+    {"name": "Excel File Merger 📑", "description": "Combine multiple Excel files into a single consolidated dataset", "link": "#"},
+    {"name": "Monte Carlo Simulator 🎲", "description": "Run sophisticated Monte Carlo simulations for financial modeling", "link": "#"},
+    {"name": "Prophet Forecaster 📊", "description": "Advanced time series forecasting for financial data analysis", "link": "#"},
 ]
 
 # Display apps in grid
@@ -26,12 +26,17 @@ for i, app in enumerate(apps):
     with columns[i % 3]:
         st.subheader(app["name"])
         st.text(app["description"])
-        # Add a unique key for each button
-        st.button(app["launch_text"], key=f"button_{i}")
+        # Button with link
+        if st.button(f"Go to {app['name'].split(' ')[0]}", key=f"button_{i}"):
+            st.write(f"Redirecting to {app['link']}... (Add real links here)")
+            # Add real redirect logic here, if needed.
 
 # Custom App Request Section
 st.markdown("---")
 st.subheader("Need a Custom AI Finance App?")
 st.write("Don't see what you're looking for? Let us build a custom AI-powered financial application tailored to your specific needs.")
+
+# Redirect to Google Form link
 if st.button("Request Custom App", key="custom_app_request"):
-    st.write("Redirecting to custom app request...")
+    st.write("Redirecting to Custom App Request Form...")
+    st.experimental_set_query_params(url="https://forms.gle/bkheBL4PDceiJpn19")
