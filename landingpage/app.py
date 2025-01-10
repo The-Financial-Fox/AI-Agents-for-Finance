@@ -16,6 +16,12 @@ apps = [
     {"name": "Excel File Merger 📑", "description": "Combine multiple Excel files into a single consolidated dataset", "link": "#"},
     {"name": "Monte Carlo Simulator 🎲", "description": "Run sophisticated Monte Carlo simulations for financial modeling", "link": "#"},
     {"name": "Prophet Forecaster 📊", "description": "Advanced time series forecasting for financial data analysis", "link": "#"},
+    # Additional 5 agents
+    {"name": "Dashboard Creator 📊", "description": "Create insightful financial dashboards with ease", "link": "https://dashboardcreator.streamlit.app/"},
+    {"name": "Finance Data Visualizer 🎨", "description": "Transform raw data into beautiful financial insights", "link": "https://finance-data-is-beautiful.streamlit.app/"},
+    {"name": "Data Visualizer for Finance 🖼️", "description": "Explore financial data through interactive visualizations", "link": "https://data-visualizer-finance.streamlit.app/"},
+    {"name": "Sankey Diagrams for Finance 🔗", "description": "Visualize financial flows with Sankey diagrams", "link": "https://sankey-diagrams-for-finance.streamlit.app/"},
+    {"name": "Python Finance Learning Path 📘", "description": "Learn Python for finance with step-by-step guidance", "link": "https://pythonfinancelearningpath.streamlit.app/"},
 ]
 
 # Display apps in grid
@@ -28,8 +34,8 @@ for i, app in enumerate(apps):
         st.text(app["description"])
         # Button with link
         if st.button(f"Go to {app['name'].split(' ')[0]}", key=f"button_{i}"):
-            st.write(f"Redirecting to {app['link']}... (Add real links here)")
-            # Add real redirect logic here, if needed.
+            st.write(f"Redirecting to {app['link']}... (Click the link below)")
+            st.markdown(f"[Open {app['name']}]({app['link']})", unsafe_allow_html=True)
 
 # Custom App Request Section
 st.markdown("---")
