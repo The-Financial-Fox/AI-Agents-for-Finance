@@ -24,18 +24,17 @@ apps = [
     {"name": "Python Finance Learning Path 📘", "description": "Learn Python for finance with step-by-step guidance", "link": "https://pythonfinancelearningpath.streamlit.app/"},
 ]
 
-# Display apps in grid
-col1, col2, col3 = st.columns(3)
-columns = [col1, col2, col3]
-
+# Display apps in a grid
+# Ensure all apps are displayed properly
+cols = st.columns(3)  # Create 3 columns
 for i, app in enumerate(apps):
-    with columns[i % 3]:
+    col = cols[i % 3]  # Distribute apps across 3 columns
+    with col:
         st.subheader(app["name"])
         st.text(app["description"])
-        # Button with link
+        # Add a button for each agent with a unique key
         if st.button(f"Go to {app['name'].split(' ')[0]}", key=f"button_{i}"):
-            st.write(f"Redirecting to {app['link']}... (Click the link below)")
-            st.markdown(f"[Open {app['name']}]({app['link']})", unsafe_allow_html=True)
+            st.markdown(f"[Click here to access {app['name']}]({app['link']})", unsafe_allow_html=True)
 
 # Custom App Request Section
 st.markdown("---")
