@@ -48,19 +48,22 @@ if st.checkbox("Show Raw Data"):
 col1, col2, col3 = st.columns(3)
 with col1:
     if not stock_data.empty:
-        st.metric("Latest Close Price", f"${stock_data['Close'].iloc[-1]:.2f}")
+        latest_close = stock_data['Close'].dropna().iloc[-1]
+        st.metric("Latest Close Price", f"${latest_close:.2f}")
     else:
         st.metric("Latest Close Price", "N/A")
 
 with col2:
     if not stock_data.empty:
-        st.metric("Highest Price", f"${stock_data['High'].max():.2f}")
+        highest_price = stock_data['High'].dropna().max()
+        st.metric("Highest Price", f"${highest_price:.2f}")
     else:
         st.metric("Highest Price", "N/A")
 
 with col3:
     if not stock_data.empty:
-        st.metric("Lowest Price", f"${stock_data['Low'].min():.2f}")
+        lowest_price = stock_data['Low'].dropna().min()
+        st.metric("Lowest Price", f"${lowest_price:.2f}")
     else:
         st.metric("Lowest Price", "N/A")
 
