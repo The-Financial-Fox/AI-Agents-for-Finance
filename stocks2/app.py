@@ -1,9 +1,9 @@
 import streamlit as st
 import yfinance as yf
-import matplotlib.pyplot as plt
+import pandas as pd
+import plotly.graph_objects as go
 from pptx import Presentation
 from pptx.util import Inches
-import pandas as pd
 import io
 
 def fetch_stock_data(ticker, period='1y'):
@@ -14,30 +14,27 @@ def fetch_stock_data(ticker, period='1y'):
 def create_visualizations(data, ticker):
     """Create and return stock data visualizations."""
     plots = {}
-    # Closing Price Plot
-    plt.figure(figsize=(10, 5))
-    plt.plot(data['Close'], label='Close Price')
-    plt.title(f'{ticker} Closing Prices')
-    plt.xlabel('Date')
-    plt.ylabel('Price')
-    plt.legend()
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
-    plots['Closing Prices'] = buf
-    plt.close()
 
-    # Volume Plot
-    plt.figure(figsize=(10, 5))
-    plt.bar(data.index, data['Volume'], color='orange')
-    plt.title(f'{ticker} Volume')
-    plt.xlabel('Date')
-    plt.ylabel('Volume')
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
-    plots['Volume'] = buf
-    plt.close()
+    # Interactive Line Chart for Closing Prices
+    fig_close = go.Figure()
+    fig_close.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Close Price'))
+    fig_close.update_layout(title=f'{ticker} Closing Prices', xaxis_title='Date', yaxis_title='Price')
+    plots['Closing Prices'] = fig_close
+
+    # Interactive Bar Chart for Volume
+    fig_volume = go.Figure()
+    fig_volume.add_trace(go.Bar(x=data.index, y=data['Volume'], name='Volume'))
+    fig_volume.update_layout(title=f'{ticker} Volume', xaxis_title='Date', yaxis_title='Volume')
+    plots['Volume'] = fig_volume
+
+    # Candlestick Chart
+    fig_candlestick = go.Figure(data=[go.Candlestick(
+        x=data.index,
+        open=data['Open'], high=data['High'],
+        low=data['Low'], close=data['Close']
+    )])
+    fig_candlestick.update_layout(title=f'{ticker} Candlestick Chart', xaxis_title='Date', yaxis_title='Price')
+    plots['Candlestick Chart'] = fig_candlestick
 
     return plots
 
@@ -59,8 +56,10 @@ def create_powerpoint(plots, ticker):
         title_placeholder.text = title
 
         # Add the plot image
-        img_path = plot
-        img = slide.shapes.add_picture(img_path, Inches(1), Inches(1.5), width=Inches(8))
+        img_path = io.BytesIO()
+        plot.write_image(img_path, format='png')
+        img_path.seek(0)
+        slide.shapes.add_picture(img_path, Inches(1), Inches(1.5), width=Inches(8))
 
     # Save PowerPoint to BytesIO
     ppt_io = io.BytesIO()
@@ -85,12 +84,13 @@ def main():
             try:
                 data = fetch_stock_data(ticker, period)
                 plots = create_visualizations(data, ticker)
+
                 ppt_files[ticker] = create_powerpoint(plots, ticker)
                 st.success(f"Data and visualizations for {ticker} prepared!")
 
                 # Show visualizations
                 for title, plot in plots.items():
-                    st.image(plot, caption=f"{ticker} - {title}")
+                    st.plotly_chart(plot)
 
             except Exception as e:
                 st.error(f"Error fetching data for {ticker}: {e}")
