@@ -1,0 +1,5 @@
+streamlit
+yfinance
+ccxt
+matplotlib
+python-pptx
