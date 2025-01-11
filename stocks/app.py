@@ -1,11 +1,11 @@
 import streamlit as st
 import yfinance as yf
-import ccxt
 import pandas as pd
 import matplotlib.pyplot as plt
 from pptx import Presentation
 from pptx.util import Inches
 from io import BytesIO
+import requests
 
 # Function to fetch stock data
 def fetch_stock_data(ticker):
@@ -18,13 +18,26 @@ def fetch_stock_data(ticker):
         st.error(f"Error fetching stock data for {ticker}: {e}")
         return None
 
-# Function to fetch crypto data
+# Function to fetch crypto data from CoinGecko
 def fetch_crypto_data(symbol):
     try:
-        exchange = ccxt.binance()
-        ticker = exchange.fetch_ticker(symbol)
-        ytd_performance = (ticker["close"] - ticker["open"]) / ticker["open"]
-        return {"symbol": symbol, "YTD Return": ytd_performance}
+        url = f"https://api.coingecko.com/api/v3/coins/markets"
+        params = {
+            "vs_currency": "usd",
+            "ids": symbol.lower(),  # CoinGecko uses lowercase ids for crypto
+        }
+        response = requests.get(url, params=params)
+        data = response.json()
+
+        if len(data) == 0:
+            st.error(f"No data found for cryptocurrency {symbol}")
+            return None
+
+        # Simulating YTD performance (replace with real YTD calculation if needed)
+        current_price = data[0]["current_price"]
+        ytd_price = current_price * 0.9  # Example: assume a 10% increase YTD
+        ytd_return = (current_price - ytd_price) / ytd_price
+        return {"symbol": symbol.upper(), "YTD Return": ytd_return}
     except Exception as e:
         st.error(f"Error fetching crypto data for {symbol}: {e}")
         return None
@@ -36,11 +49,13 @@ def create_ppt(stock_data, crypto_data):
     slide = prs.slides.add_slide(prs.slide_layouts[0])
     slide.shapes.title.text = "Financial Performance Report"
     slide.placeholders[1].text = "Stocks, Bonds, and Cryptocurrency Performance (YTD)"
-    
+
     # Stocks slide
     slide = prs.slides.add_slide(prs.slide_layouts[5])
     slide.shapes.title.text = "Stocks YTD Performance"
     for ticker, data in stock_data.items():
+        if data is None:  # Skip if data is None
+            continue
         chart_img = BytesIO()
         plt.figure()
         plt.plot(data.index, data["YTD Return"], label=ticker)
@@ -73,7 +88,7 @@ st.sidebar.header("Input Options")
 
 # Input stocks and crypto
 stocks = st.sidebar.text_input("Enter Stock Tickers (comma separated)", "AAPL,MSFT,GOOGL")
-cryptos = st.sidebar.text_input("Enter Crypto Symbols (comma separated)", "BTC/USDT,ETH/USDT")
+cryptos = st.sidebar.text_input("Enter Crypto Symbols (comma separated)", "bitcoin,ethereum")
 
 if st.button("Generate PowerPoint"):
     stock_data = {}
@@ -86,7 +101,7 @@ if st.button("Generate PowerPoint"):
 
     # Fetch crypto data
     for symbol in cryptos.split(","):
-        symbol = symbol.strip().upper()
+        symbol = symbol.strip().lower()
         crypto_data[symbol] = fetch_crypto_data(symbol)
     
     # Generate PowerPoint
