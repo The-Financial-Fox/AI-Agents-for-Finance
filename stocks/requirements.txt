@@ -1,5 +1,6 @@
 streamlit
 yfinance
-ccxt
+pandas
 matplotlib
 python-pptx
+requests
