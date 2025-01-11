@@ -132,4 +132,4 @@ with st.expander("About this App", expanded=True):
 #######################
 # Run the App
 if __name__ == "__main__":
-    st.sidebar.write("Developed with ❤️ by [Christian Martinez and ChatGPT")
+    st.sidebar.write("Developed with ❤️ by Christian Martinez and ChatGPT")
