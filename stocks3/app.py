@@ -47,36 +47,50 @@ if st.checkbox("Show Raw Data"):
 # Key Metrics
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.metric("Latest Close Price", f"${stock_data['Close'].iloc[-1]:.2f}")
+    if not stock_data.empty:
+        st.metric("Latest Close Price", f"${stock_data['Close'].iloc[-1]:.2f}")
+    else:
+        st.metric("Latest Close Price", "N/A")
+
 with col2:
-    st.metric("Highest Price", f"${stock_data['High'].max():.2f}")
+    if not stock_data.empty:
+        st.metric("Highest Price", f"${stock_data['High'].max():.2f}")
+    else:
+        st.metric("Highest Price", "N/A")
+
 with col3:
-    st.metric("Lowest Price", f"${stock_data['Low'].min():.2f}")
+    if not stock_data.empty:
+        st.metric("Lowest Price", f"${stock_data['Low'].min():.2f}")
+    else:
+        st.metric("Lowest Price", "N/A")
 
 # Line Chart
-st.markdown('### Closing Price Over Time')
-closing_chart = alt.Chart(stock_data).mark_line().encode(
-    x='Date:T',
-    y=alt.Y('Close:Q', title="Closing Price ($)"),
-    tooltip=['Date:T', 'Close:Q']
-).properties(width=800, height=400)
-st.altair_chart(closing_chart, use_container_width=True)
+if not stock_data.empty:
+    st.markdown('### Closing Price Over Time')
+    closing_chart = alt.Chart(stock_data).mark_line().encode(
+        x='Date:T',
+        y=alt.Y('Close:Q', title="Closing Price ($)"),
+        tooltip=['Date:T', 'Close:Q']
+    ).properties(width=800, height=400)
+    st.altair_chart(closing_chart, use_container_width=True)
 
-# Volume Bar Chart
-st.markdown('### Trading Volume')
-volume_chart = alt.Chart(stock_data).mark_bar().encode(
-    x='Date:T',
-    y=alt.Y('Volume:Q', title="Volume"),
-    tooltip=['Date:T', 'Volume:Q']
-).properties(width=800, height=200)
-st.altair_chart(volume_chart, use_container_width=True)
+    # Volume Bar Chart
+    st.markdown('### Trading Volume')
+    volume_chart = alt.Chart(stock_data).mark_bar().encode(
+        x='Date:T',
+        y=alt.Y('Volume:Q', title="Volume"),
+        tooltip=['Date:T', 'Volume:Q']
+    ).properties(width=800, height=200)
+    st.altair_chart(volume_chart, use_container_width=True)
 
-# Candlestick Chart
-st.markdown('### Candlestick Chart')
-candlestick_fig = px.line(stock_data, x="Date", y=["Open", "High", "Low", "Close"], 
-                           labels={"value": "Price ($)", "variable": "Stock Price"},
-                           title=f"{selected_ticker} Candlestick Chart")
-st.plotly_chart(candlestick_fig, use_container_width=True)
+    # Candlestick Chart
+    st.markdown('### Candlestick Chart')
+    candlestick_fig = px.line(stock_data, x="Date", y=["Open", "High", "Low", "Close"], 
+                               labels={"value": "Price ($)", "variable": "Stock Price"},
+                               title=f"{selected_ticker} Candlestick Chart")
+    st.plotly_chart(candlestick_fig, use_container_width=True)
+else:
+    st.write("No data available for the selected ticker and date range.")
 
 #######################
 # About Section
@@ -93,4 +107,4 @@ with st.expander("About this App", expanded=True):
 #######################
 # Run the App
 if __name__ == "__main__":
-    st.sidebar.write("Developed with ❤️ by [Christian Martinez and ChatGPT]")
+    st.sidebar.write("Developed with ❤️ by [Your Name]")
