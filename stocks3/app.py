@@ -4,7 +4,7 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import altair as alt
-import plotly.express as px
+import plotly.graph_objects as go
 
 #######################
 # Page configuration
@@ -97,9 +97,22 @@ if not stock_data.empty:
 
     # Candlestick Chart
     st.markdown('### Candlestick Chart')
-    candlestick_fig = px.line(stock_data, x="Date", y=["Open", "High", "Low", "Close"], 
-                               labels={"value": "Price ($)", "variable": "Stock Price"},
-                               title=f"{selected_ticker} Candlestick Chart")
+    candlestick_fig = go.Figure(data=[
+        go.Candlestick(
+            x=stock_data['Date'],
+            open=stock_data['Open'],
+            high=stock_data['High'],
+            low=stock_data['Low'],
+            close=stock_data['Close']
+        )
+    ])
+    candlestick_fig.update_layout(
+        title=f"{selected_ticker} Candlestick Chart",
+        xaxis_title="Date",
+        yaxis_title="Price ($)",
+        template="plotly_dark",
+        height=600
+    )
     st.plotly_chart(candlestick_fig, use_container_width=True)
 else:
     st.write("No data available for the selected ticker and date range.")
